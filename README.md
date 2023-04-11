@@ -13,5 +13,6 @@
 ### Rudy:
 1) folder data_preparation berisi program python untuk memanipulasi dataset, baik untuk pre-processing atau train-val-test split.
 2) dataset berisi folder-folder dataset yang mana 1_0 adalah CoMoFod asli, 1_1 hanya citra nya saja, dan 1_2 termasuk augmentasi
-3) **Perhatian**, untuk menjalankan data_preparation nomor 2, pastikan ada folder 1_1 atau 1_2 di folder dataset.
-4) Jika ingin mengganti train-val-test split ke folder 1_2, ubah notasi is_aug pada data_preparation nomor 2 ke True
+3) Jika ingin mengganti train-val-test split ke folder 1_2, ubah notasi is_aug pada data_preparation nomor 2 ke True
+
+**Perhatian**, untuk menjalankan data_preparation nomor 2, pastikan ada folder 1_1 atau 1_2 di folder dataset.
