@@ -4,12 +4,12 @@ from tqdm import tqdm
 
 os.chdir("../dataset")
 
-asli_path = "CoMoFoD_small_v2"
+asli_path = "1_0_CoMoFoD_small_v2"
 asli = os.listdir(asli_path)
 
 is_aug_included = True
 
-new_path = "aug_included" if is_aug_included else "image_only"
+new_path = "1_2_aug_included" if is_aug_included else "1_1_image_only"
 
 if not os.path.exists(new_path):
     os.makedirs(new_path)

@@ -8,15 +8,16 @@ from skimage import io
 
 os.chdir("../dataset")
 
-is_aug = False
+is_aug = True
 
 source_path = "1_2_aug_included" if is_aug else "1_1_image_only"
 source_dirs = os.listdir(source_path)
 
 dest_path = "2_0_ready"
 dest_prep_path = "2_1_swt-2"
+dest_y_cb_cr_path = "2_2_y_cb_cr"
 
-IMAGE_SIZE = (224, 224)
+IMAGE_SIZE = (400, 400)
 
 
 def check_or_clear_folder(path, is_need_clear):
@@ -24,30 +25,35 @@ def check_or_clear_folder(path, is_need_clear):
         os.makedirs(path)
     else:
         if is_need_clear:
+            print(f"Delete {path}")
             shutil.rmtree(path)
             os.makedirs(path)
+            print(f"Done - Delete {path}\n\n")
 
 
 
 check_or_clear_folder(dest_path, is_need_clear=True)
 check_or_clear_folder(dest_prep_path, is_need_clear=True)
+check_or_clear_folder(dest_y_cb_cr_path, is_need_clear=True)
 
 
 
 def copy_data(data, data_type, label_name):
     dest_full_path = os.path.join(dest_path, data_type, label_name)
     dest_prep_full_path = os.path.join(dest_prep_path, data_type, label_name)
+    dest_y_cb_cr_full_path = os.path.join(dest_y_cb_cr_path, data_type, label_name)
     check_or_clear_folder(dest_full_path, is_need_clear=False)
     check_or_clear_folder(dest_prep_full_path, is_need_clear=False)
+    check_or_clear_folder(dest_y_cb_cr_full_path, is_need_clear=False)
 
     index = random.randint(0, len(data) - 1)
     file_path = os.path.join(source_path, label_name, data[index])
     im = io.imread(file_path)
     im = cv2.cvtColor(im, cv2.COLOR_RGBA2BGR)
     
-    h, w = im.shape[:2]
-    im = cv2.resize(im, (w, IMAGE_SIZE[1]), interpolation=cv2.INTER_AREA if h > IMAGE_SIZE[0] else cv2.INTER_CUBIC)
-    im = cv2.resize(im, (IMAGE_SIZE[0], IMAGE_SIZE[1]), interpolation=cv2.INTER_AREA if w > IMAGE_SIZE[1] else cv2.INTER_CUBIC)
+    dest_area = IMAGE_SIZE[0] * IMAGE_SIZE[1]
+    source_area = im.shape[0] * im.shape[1]
+    im = cv2.resize(im, (IMAGE_SIZE[0], IMAGE_SIZE[1]), interpolation=cv2.INTER_AREA if source_area > dest_area else cv2.INTER_CUBIC)
     cv2.imwrite(os.path.join(dest_full_path, data[index]), im)
 
     prep_im = im.copy()
@@ -58,6 +64,10 @@ def copy_data(data, data_type, label_name):
         prep_im[:, :, i] = approx
     
     cv2.imwrite(os.path.join(dest_prep_full_path, data[index]), prep_im)
+
+    y_cb_cr = cv2.cvtColor(im, cv2.COLOR_BGR2YCR_CB)
+    cv2.imwrite(os.path.join(dest_y_cb_cr_full_path, data[index]), y_cb_cr)
+
     data.pop(index)
 
 
