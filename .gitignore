@@ -133,4 +133,5 @@ dmypy.json
 *.jpg
 *.jpeg
 *.h5
+*.zip
 result/
